@@ -1,7 +1,6 @@
 package info.wondee.kafkachat;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.common.collect.ImmutableMap;
-
 @RestController
 public class ChatController {
 
@@ -29,11 +26,6 @@ public class ChatController {
 	
 	@Autowired
 	private ConsumerFactory<Integer, ChatMessage> consumerFactory;
-	
-	@RequestMapping("/")
-	public Map<String, String> doSomething() {
-		return ImmutableMap.of("key", "value");
-	}
 	
 	@RequestMapping(value="/{chatroom}", method=RequestMethod.POST, consumes="application/json", produces="application/json")
 	public HttpEntity<ChatMessage> sendMessage(@PathVariable String chatroom, @RequestBody ChatMessage body) {

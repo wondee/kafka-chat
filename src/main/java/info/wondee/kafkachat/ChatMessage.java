@@ -2,10 +2,15 @@ package info.wondee.kafkachat;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class ChatMessage {
 	
 	private String text;
+	
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="HH:mm dd.MM.yyyy")
 	private Date time;
+	
 	private String user;
 	
 	public String getText() {
