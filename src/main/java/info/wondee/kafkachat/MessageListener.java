@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 public class MessageListener {
 
 	// flexible like requestHandler (see javadoc)
-	@KafkaListener(id="main-listener", topics="test-topic")
-	public void listen(String message) {
+	@KafkaListener(id="main-listener", topics="kafka-chat")
+	public void listen(ChatMessage message) {
 		System.out.println("message received: " + message);
 	}
 	

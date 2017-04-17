@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Message } from '../message';
+import { ChatServiceService } from '../chat-service.service';
 
 @Component({
   selector: 'chatroom',
@@ -7,26 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChatroomComponent implements OnInit {
 
-
-  messages = [
-    {
-        text: "Hallo, ich wollte mal fragen wie man ein Angular Frontend in eine Spring Boot Anwendung integriert",
-        user: "Peter",
-        time: "15:33"
-    },
-    {
-        text: "Hallo Peter, ja dann guck doch...",
-        user: "Fritz",
-        time: "15:34"
-    }
-  ];
-
-  constructor() { }
+  errorMessage: String;
+  messages: Message[];
+  chatroom: string = 'test-chat';
 
 
+  constructor(private service: ChatServiceService) { }
 
   ngOnInit() {
-    
+    this.service.retrieveMessages(this.chatroom)
+        .subscribe(
+              messages => this.messages = messages,
+              error =>  this.errorMessage = <any>error);
   }
 
 }

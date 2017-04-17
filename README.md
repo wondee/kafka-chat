@@ -4,8 +4,8 @@ ng serve
 
 cd /d d:\dev\kafka\kafka_2.11-0.10.2.0\
 
-call bin\windows\zookeeper-server-start.bat config\zookeeper.properties
-call bin\windows\kafka-server-start.bat config\server.properties
+bin\windows\zookeeper-server-start.bat config\zookeeper.properties
+bin\windows\kafka-server-start.bat config\server.properties
 
 rem kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test-topic
 rem kafka-console-consumer.bat --bootstrap-server localhost:9092 --from-beginning --topic spring-boot
