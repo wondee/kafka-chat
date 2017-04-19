@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class ChatController {
@@ -35,7 +37,7 @@ public class ChatController {
 	@Autowired
 	private KafkaTemplate<Integer, ChatMessage> template;
 	
-	@RequestMapping(value="/message/{chatroom}", method=RequestMethod.POST, consumes="application/json", produces="application/json")
+	@RequestMapping(value="/room/{chatroom}/message", method=RequestMethod.POST, consumes="application/json", produces="application/json")
 	public HttpEntity<ChatMessage> sendMessage(@PathVariable String chatroom, @RequestBody ChatMessage body) {
 
 		try {

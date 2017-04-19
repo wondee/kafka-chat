@@ -41,7 +41,7 @@ html, body {
 .current-chat-area {
     padding-top: 10px;
     overflow: auto;
-    height: 85vh;
+    height: 80vh;
 }
 
 .current-chat-footer {

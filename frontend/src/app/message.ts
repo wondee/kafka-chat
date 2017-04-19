@@ -1,7 +1,7 @@
 export class Message {
 
     text: string;
-    time: string;
+    time?: string;
     user: string;
     room: string;
 

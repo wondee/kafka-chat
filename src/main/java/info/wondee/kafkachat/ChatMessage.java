@@ -39,6 +39,10 @@ public class ChatMessage {
 	public void setRoom(String room) {
 		this.room = room;
 	}
+	@Override
+	public String toString() {
+		return "ChatMessage [text=" + text + ", time=" + time + ", user=" + user + ", room=" + room + "]";
+	}
 	
 	
 }

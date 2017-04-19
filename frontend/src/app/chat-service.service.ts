@@ -1,5 +1,5 @@
 import { Injectable }     from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable }     from 'rxjs/Observable';
 import { Message }        from './message'; 
 
@@ -11,19 +11,6 @@ export class ChatServiceService {
 
   private roomsUrl = 'http://localhost:8080/api/room/';  // URL to web API
 
-  private messages = [
-    {
-        text: "Hallo, ich wollte mal fragen wie man ein Angular Frontend in eine Spring Boot Anwendung integriert",
-        user: "Peter",
-        time: "15:33"
-    },
-    {
-        text: "Hallo Peter, ja dann guck doch...",
-        user: "Fritz",
-        time: "15:34"
-    }
-  ];
-
   constructor(private http: Http) { }
 
   retrieveMessages(chat: String): Observable<Message[]> {
@@ -33,6 +20,15 @@ export class ChatServiceService {
 
   }
   
+  sendMessage(chat: String, msg: Message): void {
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    
+    this.http.post(this.roomsUrl + chat + "/message", msg, options)
+      .catch(this.handleError)
+      .subscribe();
+  }
+
   // code from google:
   private extractData(res: Response) {
     let body = res.json();

@@ -1,31 +1,17 @@
 package info.wondee.kafkachat;
 
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+@EnableWebMvc
 @Configuration
-public class UiConfig implements WebSocketConfigurer {
-
+public class UiConfig extends WebMvcConfigurerAdapter  {
 
 	@Override
-	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		// TODO Auto-generated method stub
-		
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**").allowedOrigins("http://localhost:4200");
 	}
-	
-	
-	@Bean
-	public FilterRegistrationBean someFilterRegistration() {
-
-		FilterRegistrationBean registration = new FilterRegistrationBean();
-		registration.setFilter(new CorsFilter());
-		registration.addUrlPatterns("/*");
-		registration.setName("corsFilter");
-		registration.setOrder(1);
-		return registration;
-	} 
 	
 }

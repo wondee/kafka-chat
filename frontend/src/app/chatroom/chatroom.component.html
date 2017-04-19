@@ -38,9 +38,15 @@
 
       <div class="panel-footer">
         <div class="input-group">
-          <input class="form-control" type="text"/>
+          <input class="form-control" type="text"
+            #newMessage
+            (keyup.enter)="sendMessage(newMessage.value); newMessage.value=''"
+          />
           <span class="input-group-btn">
-            <button class="btn btn-default" type="button">Send</button>
+            <button class="btn btn-default" type="button"
+              (click)="sendMessage(newMessage.value); newMessage.value=''">
+              Send
+            </button>
           </span>
         </div>
       </div>
