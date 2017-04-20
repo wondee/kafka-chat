@@ -19,12 +19,13 @@
       <label for="chatroom">Chatroom to enter:</label>
       <input type="text" class="form-control" id="chatroom" 
         required
+        pattern="[0-9a-zA-Z/-/.]*"
         [(ngModel)]="chatroom" name="chatroom"
         #chatroomInput="ngModel"
       />
       <div [hidden]="chatroomInput.valid || chatroomInput.pristine"
         class="alert alert-danger">
-          A room must be choosen
+          A room must be choosen, the characters a-z, A-Z, 0-9, '-' or '.' are allowed
        </div>
     </div>
     <button type="submit" class="btn btn-default"
