@@ -1,7 +1,15 @@
 <div class="container-fluid">
   <div class="row">
 
-    <chatroom></chatroom>
+    <chatroom *ngIf="isLoggedIn(); else elseBlock"
+      [user]="session.user"
+      [chatroom]="session.chatroom"
+    ></chatroom>
+    <ng-template #elseBlock>
+      <login-form
+        (onLogin)="onLogin($event)"
+      ></login-form>
+    </ng-template>
   </div>
 </div>
 

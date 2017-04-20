@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { Message } from '../message';
 import { ChatServiceService } from '../chat-service.service';
 import { StompService } from 'ng2-stomp-service';
@@ -8,17 +8,21 @@ import { StompService } from 'ng2-stomp-service';
   templateUrl: './chatroom.component.html',
   styleUrls: ['./chatroom.component.css']
 })
-export class ChatroomComponent implements OnInit {
+export class ChatroomComponent implements OnInit, AfterViewChecked {
 
   private stompConfig = {
     host: 'http://localhost:8080/messages',
     debug: true
   }
 
-  errorMessage: String;
+  @ViewChild('chatView') private chatView: ElementRef;
+
+  @Input() chatroom: string;
+  @Input() user: string;
+  
+  errorMessage: string;
+
   messages: Message[];
-  chatroom: string = 'test-chat';
-  user: string = 'Markus';
 
   constructor(private service: ChatServiceService, private stomp: StompService) { 
   }
@@ -30,7 +34,12 @@ export class ChatroomComponent implements OnInit {
               error =>  this.errorMessage = <any>error);
 
     this.subscribeChat();
+    this.scrollToBottom();
   }
+
+  ngAfterViewChecked() {        
+    this.scrollToBottom();        
+  } 
 
   sendMessage(msgText: string) {
 
@@ -39,6 +48,11 @@ export class ChatroomComponent implements OnInit {
       user: this.user, 
       room: this.chatroom
     });
+  }
+  
+  private scrollToBottom() {
+    let nativeElem = this.chatView.nativeElement;
+    nativeElem.scrollTop = nativeElem.scrollHeight;
   }
 
   private subscribeChat() {

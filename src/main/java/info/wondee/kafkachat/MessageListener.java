@@ -18,7 +18,6 @@ public class MessageListener {
 	// flexible like requestHandler (see javadoc)
 	@KafkaListener(id="main-listener", topics="kafka-chat")
 	public void listen(ChatMessage message) {
-		System.out.println("message received: " + message);
 		template.convertAndSend("/chat/" + message.getRoom(), message);
 	}
 	

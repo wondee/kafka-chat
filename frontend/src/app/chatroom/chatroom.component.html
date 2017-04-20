@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div class="row current-chat-area">
+  <div #chatView class="row current-chat-area">
     <div class="col-md-12">
       <ul class="media-list">
         <message-box *ngFor="let msg of messages" [message]="msg"></message-box>

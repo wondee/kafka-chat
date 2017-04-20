@@ -10,13 +10,15 @@ import { MessageBoxComponent } from './message-box/message-box.component';
 import { ChatroomComponent } from './chatroom/chatroom.component';
 
 import { ChatServiceService } from './chat-service.service';
+import { LoginFormComponent } from './login-form/login-form.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     MessageBoxComponent,
-    ChatroomComponent
+    ChatroomComponent,
+    LoginFormComponent
   ],
   imports: [
     BrowserModule,

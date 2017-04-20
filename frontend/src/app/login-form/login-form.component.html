@@ -1,0 +1,34 @@
+<div class="col-md-9 container">
+  <h1>
+    Choose a name and a chatroom
+  </h1>
+  <form #loginForm="ngForm">
+    <div class="form-group">
+      <label for="user">Your Username:</label>
+      <input type="text" class="form-control" id="user" 
+        required
+        [(ngModel)]="user" name="user"
+        #userInput="ngModel"
+      />
+      <div [hidden]="userInput.valid || userInput.pristine"
+        class="alert alert-danger">
+          Name is required
+       </div>
+    </div>
+    <div class="form-group">
+      <label for="chatroom">Chatroom to enter:</label>
+      <input type="text" class="form-control" id="chatroom" 
+        required
+        [(ngModel)]="chatroom" name="chatroom"
+        #chatroomInput="ngModel"
+      />
+      <div [hidden]="chatroomInput.valid || chatroomInput.pristine"
+        class="alert alert-danger">
+          A room must be choosen
+       </div>
+    </div>
+    <button type="submit" class="btn btn-default"
+      (click)="login()"
+      [disabled]="!loginForm.form.valid">Submit</button>
+  </form>
+</div>
