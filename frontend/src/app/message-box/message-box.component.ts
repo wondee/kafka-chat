@@ -10,4 +10,8 @@ export class MessageBoxComponent {
 
   @Input() message: Message;
 
+
+  isOwnMessage(): boolean {
+    return true;
+  }
 }

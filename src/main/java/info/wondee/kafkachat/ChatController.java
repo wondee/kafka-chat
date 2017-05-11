@@ -5,8 +5,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -14,6 +17,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
@@ -32,10 +37,17 @@ import com.google.common.collect.Lists;
 @RequestMapping("/api")
 public class ChatController {
 
-	private static final String CHAT_TOPIC = "kafka-chat";
+	private static final String KAFKA_CHAT_TOPIC = "kafka-chat";
+
+	private static final String REDIS_CHATROOM_PREFIX = "Chatroom-";
+
+	private static final String REDIS_CHATROOM_PATTERN = REDIS_CHATROOM_PREFIX + "*";
 
 	@Autowired
-	private KafkaTemplate<Integer, ChatMessage> template;
+	private KafkaTemplate<Integer, ChatMessage> kafkaTemplate;
+	
+	@Autowired
+	private StringRedisTemplate redisTemplate;
 	
 	@RequestMapping(value="/room/{chatroom}/message", method=RequestMethod.POST, consumes="application/json", produces="application/json")
 	public HttpEntity<ChatMessage> sendMessage(@PathVariable String chatroom, @RequestBody ChatMessage body) {
@@ -44,7 +56,13 @@ public class ChatController {
 			body.setTime(new Date());
 			body.setRoom(chatroom);
 			
-			template.send(CHAT_TOPIC, body).get();
+			kafkaTemplate.send(KAFKA_CHAT_TOPIC, body).get();
+			
+			String redisKey = REDIS_CHATROOM_PREFIX + chatroom;
+			
+			redisTemplate.opsForSet().add(redisKey, body.getUser());
+			redisTemplate.expire(redisKey, 10, TimeUnit.MINUTES);
+			
 			
 		} catch (InterruptedException | ExecutionException e) {
 			throw new RuntimeException(e);
@@ -54,12 +72,28 @@ public class ChatController {
 		
 	}
 	
+	@RequestMapping(value="/room", method=RequestMethod.GET, produces="application/json")
+	public Map<String, Set<String>> getChatrooms() {
+		SetOperations<String, String> ops = redisTemplate.opsForSet();
+		
+		return 
+			redisTemplate.keys(REDIS_CHATROOM_PATTERN)
+				.stream()
+				.collect(
+					Collectors.toMap(
+						name -> name.substring(REDIS_CHATROOM_PREFIX.length()), 
+						name -> ops.members(name)
+					)
+				);
+	}
+	
+	
 	@RequestMapping(value="/room/{chatroom}", method=RequestMethod.GET, produces="application/json")
 	public List<ChatMessage> getChatroom(@PathVariable String chatroom) {
 		
 		Consumer<Integer, ChatMessage> consumer = new KafkaConsumer<>(consumerConfigs(), null, new JsonDeserializer<>(ChatMessage.class));
 		
-		consumer.subscribe(Arrays.asList(CHAT_TOPIC));
+		consumer.subscribe(Arrays.asList(KAFKA_CHAT_TOPIC));
 		
 		ConsumerRecords<Integer, ChatMessage> records = consumer.poll(10000);
 		Iterator<ConsumerRecord<Integer, ChatMessage>> iter = records.iterator();
