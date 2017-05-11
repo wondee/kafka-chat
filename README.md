@@ -1,21 +1,74 @@
 
+# Kafka-Chat 
 
+## Introduction
+
+This is a sample application to test some technologies, different tools and frameworks. 
+
+The rough architecture is:
+
+```
+
+Angular ----- Spring Boot ----- Kafka / Zookeeper
+                  |
+                  |
+                Redis
+
+```
+
+- Angular Frontend renders the view (messages are sent via websockets)
+- Kafka stores and distributes the chat messages
+- Redis stores the state of the chat rooms
+- Spring boot glues it all together
+
+## Some Useful commands
+
+### Project specific
+Starting the frontend
+```
 ng serve
+```
 
-cd /d d:\dev\kafka\kafka_2.11-0.10.2.0\
+Start Redis and Kafka via the script (the kafka installation folder needs to be adjusted)
+```
+scripts/start_kafka.bat
+```
 
-bin\windows\zookeeper-server-start.bat config\zookeeper.properties
-bin\windows\kafka-server-start.bat config\server.properties
+#### System API 
 
-rem kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test-topic
-rem kafka-console-consumer.bat --bootstrap-server localhost:9092 --from-beginning --topic spring-boot
-rem kafka-console-producer.bat --broker-list localhost:9092 --topic my-replicated-topic
-rem kafka-topics.bat --describe --zookeeper localhost:2181 --topic spring.boot
+List all chatrooms
+```
+curl  http://localhost:8080/api/room
+```
 
-list all chats:
+Get all messages from a chatroom
+```
+curl  http://localhost:8080/api/room/[chatroom name]
+```
 
-curl  http://localhost:8080/
+Post a message
+```
+curl -H "Content-Type: application/json" -X POST -d '{"text":"[message text]", "user":"[user name]"}' http://localhost:8080/room/[chatroom name]/message
+```
 
-post a message:
+### Kafka specific
 
-curl -H "Content-Type: application/json" -X POST -d '{"text":"Test message...", "user":"Markus"}' http://localhost:8080/test-chat
+create a new kafka topic 
+```
+kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic [topic name]
+```
+
+listen to incoming messages in the conolse
+```
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --from-beginning --topic [topic name]
+```
+
+open a new producer from the console
+```
+kafka-console-producer.bat --broker-list localhost:9092 --topic [topic name]
+```
+
+get a description of a topic
+```
+kafka-topics.bat --describe --zookeeper localhost:2181 --topic [topic name]
+```
